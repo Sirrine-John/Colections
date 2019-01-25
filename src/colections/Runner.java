@@ -21,11 +21,11 @@ public class Runner
 
 
 
-    public Runner(String L,String F,Integer P,String D,String R)
+    public Runner(String L,String F,String P,String D,String R)
     {
         firstName = F;
         lastName = L;
-        position = P;
+        position = Integer.parseInt(P);
         finishDate = D;
         runnerID = R;
     }

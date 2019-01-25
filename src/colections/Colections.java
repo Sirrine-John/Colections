@@ -68,6 +68,16 @@ public class Colections {
         
         //Queues
         Queues queue = new Queues();
+        queue.loadSoda("Sprite");
+        queue.loadSoda("Dr. Pepper");
+        queue.loadSoda("Sierra Mist");
+        queue.loadSoda("Mountain Dew");
+        queue.loadSoda("Root Beer");
+        System.out.println(queue.getSoda());
+        System.out.println(queue.getSoda());
+        System.out.println(queue.getSoda());
+        System.out.println(queue.getSoda());
+        System.out.println(queue.getSoda());
         
         //Trees
         Trees tree = new Trees();

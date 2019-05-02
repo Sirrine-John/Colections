@@ -81,6 +81,12 @@ public class Colections {
         
         //Trees
         Trees tree = new Trees();
-        
+        tree.add("A", "first input");
+        tree.add("M", "second input");
+        tree.add("b", "third input");
+        tree.add("Q", "fourth input");
+        tree.add("P", "fifth input");
+        tree.add("a", "sixth input");
+        System.out.println("Tree : "+tree.print());
     }
 }

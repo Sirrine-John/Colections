@@ -4,11 +4,14 @@
  * and open the template in the editor.
  */
 package colections;
+import java.util.TreeMap;
 
-/**
- *
- * @author sirri
- */
 public class Trees {
-    
+    TreeMap<String,String> internalTree = new TreeMap<>();
+    public void add(String key,String value){
+        internalTree.put(key,value);
+    }
+    public TreeMap print(){
+        return internalTree;
+    }
 }

@@ -39,19 +39,22 @@ public class Colections {
             temp = null;
         }
         
+        System.out.println("LISTS EXAMPLE OUTPUT:");
         //Lists
         Lists raceList = new Lists();
         raceList.printParticipants(runnerList);
         
+        System.out.println(System.lineSeparator()+"SETS EXAMPLE OUTPUT:");
         //Sets 
         Sets registerAndCheckin = new Sets();
-        String[] registrants = {"R15889","R15892","R15897","R15893","R15895"};
+        String[] registrants = {"R15889","R15892","R15897","R15893","R15895","R15889","R15892","R15897"};
         registerAndCheckin.registerRunners(registrants);
         for (int i=0;i<runnerList.size()-1;i++)
         {
             registerAndCheckin.runnerCheckIn(runnerList.get(i));
         }
-        
+                
+        System.out.println(System.lineSeparator()+"MAPS EXAMPLE OUTPUT:");
         //Maps
         Maps map = new Maps();
         for (int i=0;i<runnerList.size()-1;i++)
@@ -66,6 +69,8 @@ public class Colections {
         map.getRunnerName("Ryan");
         map.getRunnerName("Bob");
         
+                
+        System.out.println(System.lineSeparator()+"QUEUES EXAMPLE OUTPUT:");
         //Queues
         Queues queue = new Queues();
         queue.loadSoda("Sprite");
@@ -79,14 +84,15 @@ public class Colections {
         System.out.println(queue.getSoda());
         System.out.println(queue.getSoda());
         
+                
+        System.out.println(System.lineSeparator()+"TREES EXAMPLE OUTPUT:");
         //Trees
         Trees tree = new Trees();
-        tree.add("A", "first input");
-        tree.add("M", "second input");
-        tree.add("b", "third input");
-        tree.add("Q", "fourth input");
-        tree.add("P", "fifth input");
-        tree.add("a", "sixth input");
+        for (int i =0;i<runnerList.size();i++){
+            String fullName = runnerList.get(i).getLastName() +", "+ runnerList.get(i).getFirstName();
+            tree.add(fullName, "Runner ID: "+runnerList.get(i).getRunnerID());
+        }
         System.out.println("Tree : "+tree.print());
+
     }
 }

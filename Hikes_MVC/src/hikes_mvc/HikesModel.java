@@ -63,6 +63,9 @@ public class HikesModel {
         }
         return resultsSimple;
     }
+    public void deleteHike(String key){
+        this.Hikes.remove(key);
+    }
     
     
 }

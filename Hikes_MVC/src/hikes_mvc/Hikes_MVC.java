@@ -16,7 +16,5 @@ public class Hikes_MVC {
      */
     public static void main(String[] args) {
         HikesController Control = new HikesController();
-        
     }
-    
 }

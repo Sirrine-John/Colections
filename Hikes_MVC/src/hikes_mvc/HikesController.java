@@ -41,26 +41,120 @@ public class HikesController {
                 , "A very short hike off a highway takes you to the top of a cliff overlooking Horseshoe Bend and the Colorado River over 1100 feet below."
                 , "Horseshoe Bend is just south of Page, Arizona. From the Glen Canyon Dam on US-89 head south for 5.1 miles. You’ll pass along the edge of Page, Arizona. At around 5 miles from the Glen Canyon Dam, you’ll see a sign for Horseshoe Bend Overlook. Turn right into parking area. If coming from the south, take US-89 north to Page, Arizona and before coming into town you’ll see a Horseshoe Bend Overlook sign. Turn left into the parking lot.");
         
-        System.out.println(this.requestHikeSingle("Devils Bridge"));
-        System.out.println(this.requestHikeListSimple());        
-        System.out.println(this.requestHikeListFull());
+//        System.out.println(this.requestHikeSingle("Devils Bridge"));
+//        System.out.println(this.requestHikeListSimple());        
+//        System.out.println(this.requestHikeListFull());
+//        this.addNewHike("test", "far", "rediculous", "Boring and long", "Two Lefts, A Right, and a Left");
+//        System.out.println(this.requestHikeSingle("test"));
+//        System.out.println(this.requestHikeListSimple());
+//        this.removeHike("test");
+//        System.out.println(this.requestHikeListSimple());
+//        System.out.println(this.requestHikeSingle("test"));
+        
+        this.showMenu();
+        
+        
     }
-    
+    private void showMenu(){
+        requestHandle(this.view.showMenu());
+    }
+    private void requestHandle(String request){
+        ArrayList<String> out = new ArrayList<>();
+        switch(request){
+            case "H":
+                out = this.requestHikeListSimple();
+                this.view.printOutput(out);
+                break;
+            case "I":
+                this.keyHandle(request, this.view.keyPrompt());
+                break;
+            case "A":
+                this.addHandle(this.view.addPrompt());
+                break;
+            case "D":
+                this.keyHandle(request, this.view.keyPrompt());
+                break;
+            case "S":
+                out = this.requestHikeListFull();
+                this.view.printOutput(out);
+                break;
+            case "E":
+                this.view.exit();
+                break;
+            default:
+                break;
+        }
+        this.showMenu();
+    }
+    private void keyHandle(String request, String key){
+        ArrayList<String> out = new ArrayList<>();
+        switch(request){
+            case "I":
+                this.view.printOutput(this.requestHikeSingle(key));
+                break;
+            case "D":
+                out.add("Request made to remove "+key);
+                this.removeHike(key);
+                this.view.printOutput(out);
+                break;
+            default:{
+                out.add("Invalid Entry");
+                this.view.printOutput(out);
+                break;
+            }
+        }
+        this.showMenu();
+    }
+    private void addHandle(ArrayList newHike){
+        this.addNewHike(newHike.get(0).toString(), newHike.get(1).toString(), newHike.get(2).toString(), newHike.get(3).toString(), newHike.get(4).toString());
+        this.showMenu();
+    }
     
     public ArrayList requestHikeSingle(String key){
-        return hikes.getHike(key);
+        ArrayList<String> out;
+        out = this.hikes.getHike(key);
+        if (out == null){
+            ArrayList<String> err = new ArrayList<>();
+            err.add("No such item");
+            return err;
+        }
+        else{
+            return out;
+        }
     }
     public ArrayList requestHikeListSimple(){
-        return hikes.getHikeSimple();
+        ArrayList<String> out;
+        out = this.hikes.getHikeSimple();
+        if (out == null){
+            ArrayList<String> err = new ArrayList<>();
+            err.add("No such Item");
+            return err;
+        }
+        else{
+            return out;        
+        }
+
     }
     public ArrayList requestHikeListFull(){
-        return hikes.getHikeAll();
+        ArrayList<ArrayList<String>> out;
+        out = this.hikes.getHikeAll();
+        if (out == null){
+            ArrayList<ArrayList<String>> sub1 = new ArrayList<>();
+            ArrayList<String> sub2 = new ArrayList<>();
+            sub2.add("NONE");
+            sub1.add(sub2);
+            return sub1;
+        }
+        else{
+            return out;        
+        }
+
     }
     public void addNewHike(String name,String distance, String difficulty, String description, String directions){
-        
+        this.hikes.acceptHike(name, distance, difficulty, description, directions);
     }
     public void removeHike(String name){
-        
+        this.hikes.deleteHike(name);
     }
     
     

@@ -13,18 +13,27 @@ public class URLHttpConnection
     private static final String USER_AGENT = "Mozilla/5.0";
     public static void main(String[] args) throws Exception
     {
+         
     try
     {
       String getURL = "https://raw.githubusercontent.com/Biuni/PokemonGO-Pokedex/master/pokedex.json";
       String postURL = "https://postman-echo.com/post/";
+      String[] urls = {getURL,postURL};
+      for (String url : urls){
+          System.out.println(connectionCreate(url,"GET")+
+                  System.lineSeparator()+
+              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+System.lineSeparator()+
+              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+System.lineSeparator()+
+              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+          System.out.println(connectionCreate(url,"POST")+
+                  System.lineSeparator()+
+              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+System.lineSeparator()+
+              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+System.lineSeparator()+
+              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+          System.out.println("Press ENTER to Continue");
+          System.in.read();
+      }
      
-      String resultsGET = connectionCreate(getURL,"GET");
-      String resultsPOST = connectionCreate(postURL,"POST");
-      System.out.println(resultsGET+System.lineSeparator()+
-              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+System.lineSeparator()+
-              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+System.lineSeparator()+
-              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+
-              System.lineSeparator()+resultsPOST);
     }
     catch (Exception e)
     {
@@ -34,8 +43,8 @@ public class URLHttpConnection
     private static String connectionCreate(String desiredUrl, String option)
             throws Exception
     {
-    String requestResultMessage;
-    Integer requestResultCode;
+    String requestResultMessage = "PreConnection Message";
+    Integer requestResultCode = 0;
     URL url = null;
     BufferedReader reader = null;
     StringBuilder stringBuilder;
@@ -50,11 +59,13 @@ public class URLHttpConnection
       
       switch(option) {
           case "GET":
+              requestResultMessage = "GET - ";
               connection.setRequestMethod("GET");
               connection.setReadTimeout(15*1000);
               connection.connect();
               break;
           case "POST":
+              requestResultMessage = "POST - ";
               connection.setRequestMethod("POST");
               connection.setDoOutput(true);
               connection.setReadTimeout(15*1000);
@@ -64,7 +75,7 @@ public class URLHttpConnection
                   write.writeBytes(inputProperties);
                   write.flush();
               }catch(Exception e){
-                  e.printStackTrace();
+                  //e.printStackTrace();
               }
               break;
           default:
@@ -74,8 +85,8 @@ public class URLHttpConnection
       
       // give it 15 seconds to respond
       
-      requestResultMessage = connection.getResponseMessage();
-      requestResultCode = connection.getResponseCode();
+      requestResultMessage += connection.getResponseMessage();
+      requestResultCode += connection.getResponseCode();
       System.out.println("Response from: "+connection.getURL().toString()+System.lineSeparator()+requestResultCode + ": "+requestResultMessage);
 
       // read the output from the server
@@ -91,8 +102,9 @@ public class URLHttpConnection
     }
     catch (Exception e)
     {
-      e.printStackTrace();
-      throw e;
+      //e.printStackTrace();
+      //throw e;
+      return "ERROR: "+requestResultCode + ": "+requestResultMessage+": "+url;
     }
     finally
     {// close the reader;
@@ -102,12 +114,11 @@ public class URLHttpConnection
           catch (IOException ioe){ioe.printStackTrace();}
       }
     }
+  }
+}
         
-    }
 //      connection.setRequestMethod("HEAD");
 //      connection.setRequestMethod("OPTIONS");
 //      connection.setRequestMethod("PUT");
 //      connection.setRequestMethod("DELETE");
 //      connection.setRequestMethod("TRACE");
-
-}

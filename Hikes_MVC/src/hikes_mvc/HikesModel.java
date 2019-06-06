@@ -14,20 +14,20 @@ import java.util.ArrayList;
  */
 public class HikesModel {
     ArrayList hikeDetails = new ArrayList();
-    HikesModel(){};    
-    HikesModel(String name,String distance, String difficulty, String description, String directions){
-    hikeDetails.add(name);
-    hikeDetails.add(distance);
-    hikeDetails.add(difficulty);
-    hikeDetails.add(description);
-    hikeDetails.add(directions);
+    HikesModel(){}; 
+    
+    HikesModel(String name,String distance, String difficulty, String description, String directions)
+    {
+        hikeDetails.add(name);
+        hikeDetails.add(distance);
+        hikeDetails.add(difficulty);
+        hikeDetails.add(description);
+        hikeDetails.add(directions);
     insertHike(hikeDetails);
 };
    
     private HashMap<String,ArrayList> Hikes = new HashMap<>();
 
-
-    
     public void acceptHike(String name, String distance, String difficulty,String description, String directions){
         ArrayList newHike = new ArrayList();
         newHike.add(name);

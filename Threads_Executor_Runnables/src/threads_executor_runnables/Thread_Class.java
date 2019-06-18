@@ -5,7 +5,6 @@
  */
 package threads_executor_runnables;
 
-import java.lang.Thread;
 /**
  *
  * @author sirri
@@ -15,13 +14,14 @@ public class Thread_Class extends Thread{
         super(str);
     }
     public void run() {
-        for (int i = 0; i < 10; i++) {
-            System.out.println(getName() + " loop "+ i);
-            try {
-               sleep((int)(Math.random() * 1000));
-            } catch (InterruptedException e) {}
+        int loopInt = (int) Math.round(Math.random() * 100);
+        for (int i = 0; i < loopInt; i++) {
+            //System.out.println(getName() + " loop "+ i);
+//            try {
+//               sleep((int)(Math.random() * 1000));
+//            } catch (InterruptedException e) {}
         }
-        System.out.println("DONE! " + getName());
+        System.out.println(loopInt + " Loops DONE! " + getName());
     }
 }
     

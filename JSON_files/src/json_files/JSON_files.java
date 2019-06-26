@@ -1,4 +1,3 @@
-/
 package json_files;
 
 import java.io.FileNotFoundException;

@@ -24,3 +24,6 @@
 /Tomcat/dist/
 /Tomcat_web/nbproject/private/
 /Tomcat_web/build/
+/JUnit_Tests/nbproject/private/
+/JUnit_Testing/nbproject/private/
+/JUnit_Testing/build/

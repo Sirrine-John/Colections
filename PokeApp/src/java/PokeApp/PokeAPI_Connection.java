@@ -6,15 +6,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.DataOutputStream;
-import java.util.concurrent.TimeUnit;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import com.google.gson.*;
 
 public class PokeAPI_Connection implements Runnable{
 	private final String USER_AGENT = "Mozilla/5.0";
 	private String urlString;
 	private String option;
-	private JSONObject results;
+	private JsonObject results;
 	public PokeAPI_Connection(String in_url,String in_option){
 		this.urlString = in_url;
 		this.option = in_option;
@@ -51,7 +49,7 @@ public class PokeAPI_Connection implements Runnable{
               connection.setDoOutput(true);
               connection.setReadTimeout(15*1000);
               connection.connect();
-              inputProperties = "Post String 1=This is a string that shoud be retuned&Post String 2=This is the second string that should be printed";
+              inputProperties = "Post String 1= This is a string that shoud be retuned&Post String 2=This is the second string that should be printed";
               try(DataOutputStream write = new DataOutputStream(connection.getOutputStream())){
                   write.writeBytes(inputProperties);
                   write.flush();
@@ -68,9 +66,6 @@ public class PokeAPI_Connection implements Runnable{
       
       requestResultMessage += connection.getResponseMessage();
       requestResultCode += connection.getResponseCode();
-      //System.out.println("Response from: "+connection.getURL().toString()+System.lineSeparator()+requestResultCode + ": "+requestResultMessage);
-
-	  
 	  
       // read the output from the server
       reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -81,35 +76,26 @@ public class PokeAPI_Connection implements Runnable{
       {
         stringBuilder.append(line + "\n");
       }
-	  //System.out.println(stringBuilder.toString());
 	  
-	  JSONParser parser = new JSONParser();
-	  JSONObject results = new JSONObject();
-	  results = (JSONObject) parser.parse(stringBuilder.toString());
-//	  try {
-//              TimeUnit.MILLISECONDS.sleep((int)(Math.random() * 1000));
-//            } catch (InterruptedException e) {}
-//	  System.out.println("Thread finished: "+url);
-	  
-//	  this.results = results;
+	  JsonParser parser = new JsonParser();
+	  JsonObject results = new JsonObject();
+	  results = (JsonObject) parser.parse(stringBuilder.toString());
+
 	  if(desiredUrl == "https://pokeapi.co/api/v2/pokemon-species/"){
-		  System.out.println("END - Thread " + option + " " + urlString);
+		  System.out.println(requestResultCode + ": "+requestResultMessage+" : END - Thread " + option + " " + urlString);
 		  this.results = results;
 	  }
 	  else{
-		int key = Integer.parseInt(results.get("id").toString());
-		PokeAPI_JSON.pokeCollection.put(key,results);
-		System.out.println("END - Thread " + option + " " + urlString);
+		String key = results.get("id").toString();
+		PokeAPI_JSON.pokeCollection.add(key,results);
+		System.out.println(requestResultCode + ": "+requestResultMessage+" : END - Thread " + option + " " + urlString);
 	  }
     }
     catch (Exception e)
     {
-      //e.printStackTrace();
-      //throw e;
 	  System.out.println("ERROR: "+requestResultCode + ": "+requestResultMessage+": "+url);
       return;
-		// "ERROR: "+requestResultCode + ": "+requestResultMessage+": "+url;
-    }
+	}
     finally
     {// close the reader;
       if (reader != null)
@@ -119,7 +105,8 @@ public class PokeAPI_Connection implements Runnable{
       }
     }
   }
-	public JSONObject getResults(){
+		
+	public JsonObject getResults(){
 		return this.results;
 	}
 	

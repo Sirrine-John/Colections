@@ -1,30 +1,31 @@
 package PokeApp;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
  
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-//import org.json.simple.parser.JSONParser;
-//import org.json.simple.parser.ParseException;
+import com.google.gson.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class PokeAPI_JSON {
 	
-	public static JSONObject pokeCollection = new JSONObject();
-	private JSONObject trimmedPokeCollection = new JSONObject();
+	public static JsonObject pokeCollection = new JsonObject();
 	@SuppressWarnings("unchecked")
 	
-	public void getPokeJSON(){
+	public JsonObject getPokeJSON() throws IOException{
 		int totalPokeCount;
-		String nextPage;
-		double totalPages;
+		
 		try{
 			PokeAPI_Connection connection = new PokeAPI_Connection("https://pokeapi.co/api/v2/pokemon-species/","GET");
-			JSONObject initialFetch = new JSONObject();
+			JsonObject initialFetch = new JsonObject();
 			connection.run();
 			initialFetch = connection.getResults();
 			totalPokeCount = Integer.parseInt(initialFetch.get("count").toString());
@@ -32,12 +33,14 @@ public class PokeAPI_JSON {
 //			totalPages = Math.ceil(totalPokeCount/20.0);
 //			System.out.println("Starting loop for "+totalPages+" pages.");
 //			for(int i=0;i<totalPokeCount;i++){
-			for(int i=0;i<99;i++){
+			ExecutorService exeServ = Executors.newFixedThreadPool(totalPokeCount);
+			for(int i=0;i<totalPokeCount;i++){
 				int currentPokeNum = i+1;
 				PokeAPI_Connection individualConnection = new PokeAPI_Connection("https://pokeapi.co/api/v2/pokemon/"+currentPokeNum+"/", "GET");
 //				JSONObject pokeFetch = new JSONObject();
 				Thread retrevalThread = new Thread(individualConnection);
-				retrevalThread.start();
+				exeServ.execute(retrevalThread);
+//				retrevalThread.start();
 				//pokeFetch = individualConnection.getResults();
 				//pokeCollection.put(currentPokeNum,pokeFetch);
 				if((currentPokeNum % 100) == 0){
@@ -46,31 +49,65 @@ public class PokeAPI_JSON {
 					
 					System.out.println();
 				}
+				
 			};
+			exeServ.shutdown();
+			exeServ.awaitTermination(30, TimeUnit.SECONDS);
+			
 		}
 		catch(Exception e){
 			System.out.println(e);
 		}
+		finally{
+			return trimPokeCollection();
+		}
 	}
 	
-	public JSONObject trimPokeCollection(){
-		getPokeJSON();
-		JSONObject newPokeCollection = new JSONObject();
-		for(int i =0;i<pokeCollection.size();i++){
-			JSONObject singlePokemon = new JSONObject();
-			singlePokemon.putAll((Map)pokeCollection.get(i+1));
-			JSONArray pokeInfo = new JSONArray();
-			pokeInfo.add(singlePokemon.get("id"));
-			pokeInfo.add(singlePokemon.get("name"));
-			pokeInfo.add(singlePokemon.get("height"));
-			pokeInfo.add(singlePokemon.get("weight"));
-			pokeInfo.add(singlePokemon.get("base_experience"));
-			pokeInfo.add(singlePokemon.get("types"));
-			pokeInfo.add(singlePokemon.get("sprites"));
-			newPokeCollection.put(i, pokeInfo);
-		}
+	private JsonObject trimPokeCollection() throws IOException{
+		JsonObject newPokeCollection = new JsonObject();
+		pokeCollection.entrySet().stream().map((poke) -> {
+			JsonObject single = new JsonObject();
+			single = (JsonObject) poke.getValue();
+			return single;
+		}).map((single) -> {
+			JsonArray pokeInfo = new JsonArray();
+			pokeInfo.add(single.get("id"));
+			pokeInfo.add(single.get("name"));
+			pokeInfo.add(single.get("height"));
+			pokeInfo.add(single.get("weight"));
+			pokeInfo.add(single.get("base_experience"));
+			pokeInfo.add(single.getAsJsonArray("types").get(0).getAsJsonObject().getAsJsonObject("type").get("name"));
+			try{pokeInfo.add(single.getAsJsonArray("types").get(1).getAsJsonObject().getAsJsonObject("type").get("name"));}
+			catch(Exception e){pokeInfo.add("");}
+			;
+			try{
+				saveSprites(single.getAsJsonObject("sprites").get("front_default").getAsString(),pokeInfo.get(0).getAsString());
+				pokeInfo.add("./src/Java/pokeApp/Sprites/"+pokeInfo.get(0).getAsString()+".png");
+			}catch(Exception e){pokeInfo.add("");}
+			return pokeInfo;
+		}).forEachOrdered((pokeInfo) -> {
+			newPokeCollection.add(pokeInfo.get(0).getAsString(), pokeInfo);
+		});
 		return newPokeCollection;
 		
+	}
+	
+	public void saveSprites(String imageUrl, String pokeId) throws IOException{
+		File imgPath = new File("./src/Java/pokeApp/Sprites/"+pokeId+".png");
+		if (!imgPath.exists()){
+			URL url = new URL(imageUrl);
+			InputStream is = url.openStream();
+			OutputStream os = new FileOutputStream("./src/Java/pokeApp/Sprites/"+pokeId+".png");
+
+			byte[] b = new byte[2048];
+			int length;
+
+			while ((length = is.read(b)) != -1) {
+				os.write(b, 0, length);
+			}
+			is.close();
+			os.close();
+		}
 	}
 	
 }

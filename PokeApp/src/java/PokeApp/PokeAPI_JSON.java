@@ -82,7 +82,7 @@ public class PokeAPI_JSON {
 			;
 			try{
 				saveSprites(single.getAsJsonObject("sprites").get("front_default").getAsString(),pokeInfo.get(0).getAsString());
-				pokeInfo.add("./src/Java/pokeApp/Sprites/"+pokeInfo.get(0).getAsString()+".png");
+				pokeInfo.add("p"+pokeInfo.get(0).getAsString()+".png");
 			}catch(Exception e){pokeInfo.add("");}
 			return pokeInfo;
 		}).forEachOrdered((pokeInfo) -> {
@@ -93,11 +93,11 @@ public class PokeAPI_JSON {
 	}
 	
 	public void saveSprites(String imageUrl, String pokeId) throws IOException{
-		File imgPath = new File("./src/Java/pokeApp/Sprites/"+pokeId+".png");
+		File imgPath = new File("./src/Java/pokeApp/Sprites/p"+pokeId+".png");
 		if (!imgPath.exists()){
 			URL url = new URL(imageUrl);
 			InputStream is = url.openStream();
-			OutputStream os = new FileOutputStream("./src/Java/pokeApp/Sprites/"+pokeId+".png");
+			OutputStream os = new FileOutputStream("./src/Java/pokeApp/Sprites/p"+pokeId+".png");
 
 			byte[] b = new byte[2048];
 			int length;

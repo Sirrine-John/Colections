@@ -17,7 +17,7 @@ public class testerMain {
 		PokeAPI_JSON returnPokemon = new PokeAPI_JSON();
 		JsonObject pokeShortList = new JsonObject();
 		pokeShortList = returnPokemon.getPokeJSON();
-		PokeHibernate addPoke = new PokeHibernate();
+		PokeHibernate hiberPoke = new PokeHibernate();
 		for(Map.Entry<String,JsonElement> poke : pokeShortList.entrySet()){
 			JsonArray singlePoke = (JsonArray)poke.getValue();
 			int id = singlePoke.get(0).getAsInt();
@@ -28,12 +28,16 @@ public class testerMain {
 			String type_1 = singlePoke.get(5).getAsString();
 			String type_2 = singlePoke.get(6).getAsString();
 			String sprite_location = singlePoke.get(7).getAsString();
-			addPoke.addPokemon(id, name, height, weight, base_experience, type_1, type_2, type_2, sprite_location);
-			
-		System.out.println();
+			hiberPoke.addPokemon(id, name, height, weight, base_experience, type_1, type_2, type_2, sprite_location);
+
 		}
-		addPoke.addPokemon("Close");
+		hiberPoke.addPokemon("Close");
+//		System.out.println(hiberPoke.getPokemon(1));
+//		System.out.println(hiberPoke.getPokemon("pikachu"));
+//		System.out.println(hiberPoke.getCount());
+//		hiberPoke.addPokemon("Close");
 		System.out.println();
+		
 	}
 	
 }

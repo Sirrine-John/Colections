@@ -60,4 +60,12 @@ public class PokemonModel {
 	public void setType2(String type_2){this.type_2 = type_2;};
 	public void setSpriteApiLocation(String sprite_location){this.sprite_location = sprite_location;};
 	
+	@Override
+	public String toString(){
+		return "{\"id\" : \"" + this.poke_id + "\",\"name\" : \"" + this.name + "\",\"height\" : \"" + this.height 
+				+ "\",\"weight\" : \"" + this.weight + "\",\"basexp\" : \"" + this.base_experience
+				+ "\",\"type1\" : \"" + this.type_1 + "\",\"type2\" : \"" + this.type_2 + "\",\"spriteloc\" : \""
+				+ this.sprite_location + "\"}";
+	}
+	
 }

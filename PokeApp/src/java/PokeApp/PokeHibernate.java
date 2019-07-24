@@ -1,8 +1,12 @@
 package PokeApp;
 
+import java.util.Arrays;
+import java.util.List;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 public class PokeHibernate {
 	public PokeHibernate(){
 		this.sessionFactory = new Configuration()
@@ -30,6 +34,36 @@ public class PokeHibernate {
 			session.close();
 			this.sessionFactory.close();
 		}
+	}
+	
+	public String getPokemon(int pokeid){
+		String pokeString;
+		Session session = this.sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		PokemonModel pokeRequest = (PokemonModel) session.get(PokemonModel.class, pokeid);
+		pokeString = pokeRequest.toString();
+		session.getTransaction().commit();
+		return pokeString;
+	}
+	public String getPokemon(String pokeName){
+		String pokeString;
+		Session session = this.sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		Criteria criteria = session.createCriteria(PokemonModel.class);
+		pokeString = criteria.add(Restrictions.eq("name", pokeName)).uniqueResult().toString();
+		session.getTransaction().commit();
+		return pokeString;
+	}
+	
+	public String getCount(){
+		String count;
+		List results;
+		Session session = this.sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		results = session.createSQLQuery("select count(*) from pokeapp.pokemon").list();
+		count = results.get(0).toString();
+		session.getTransaction().commit();
+		return count;
 	}
 	
 }
